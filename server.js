@@ -1,4 +1,5 @@
 const express = require('express');
+const mongoose = require('mongoose');
 const articleRouter = require('./routes/articles');
 const app = express();
 const bodyParser = require("body-parser");
@@ -22,7 +23,7 @@ app.get('/', (req, res) => {
         createdAt: new Date(),
         description: 'Test Description 2'
     }];
-    res.render('index' , { articles: articles });
+    res.render('articles/index' , { articles: articles });
 });
 
 app.listen(5000, () => {
