@@ -5,6 +5,7 @@ const articleRouter = require('./routes/articles');
 const app = express();
 const bodyParser = require("body-parser");
 const Article = require('./models/article');
+const methodOverride = require('method-override');
 
 const mongoURL = process.env.MONGODB_URL;
 
@@ -18,6 +19,7 @@ app.set('view engine', 'ejs');
 
 app.use(bodyParser.json()); // support json encoded bodies
 app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
+app.use(methodOverride('_method'))
 app.use('/articles', articleRouter);
 
 
