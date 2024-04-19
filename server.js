@@ -2,10 +2,10 @@ require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const articleRouter = require('./routes/articles');
-const app = express();
 const bodyParser = require("body-parser");
 const Article = require('./models/article');
 const methodOverride = require('method-override');
+const app = express();
 
 const mongoURL = process.env.MONGODB_URL;
 
@@ -15,18 +15,18 @@ mongoose.connect(mongoURL)
     .catch((err) => console.error('Error connecting to MongoDB:', err));
 
 app.set('view engine', 'ejs');
-
-
 app.use(bodyParser.json()); // support json encoded bodies
 app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 app.use(methodOverride('_method'))
-app.use('/articles', articleRouter);
+
 
 
 app.get('/', async (req, res) => {
     const articles = await Article.find().sort({ createdAt: 'desc' });
     res.render('articles/index' , { articles: articles });
 });
+
+app.use('/articles', articleRouter);
 
 PORT = process.env.PORT || 5000;
 
