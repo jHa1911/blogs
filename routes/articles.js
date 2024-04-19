@@ -1,4 +1,5 @@
 const express = require('express');
+const Article = require('./../models/article');
 const router = express.Router();    
 
 router.get('/', (req, res) => {
@@ -7,13 +8,34 @@ router.get('/', (req, res) => {
 
 router.get('/new', (req, res) => {
     // render a form for creating a new article
-    res.render('articles/new');
+    res.render('articles/new', { article: new Article() });
 });
 
-router.post('/', (req, res) => {
-    // create a new article
-    
+router.get('/:id', async (req, res) => {
+    try{
+        const article = await Article.findById(req.params.id);
+        if(article == null){
+            res.redirect('/');
+        }
+        res.render('articles/show', { article: article });
+    } catch (error) {
+        console.log(error);
+    }
+});
 
+router.post('/', async (req, res) => {
+    let article = new Article({
+        title: req.body.title,
+        description: req.body.description,
+        markdown: req.body.markdown
+    });
+    try {
+        const newArticle = await article.save();
+        res.redirect(`/articles/${newArticle.id}`);
+    } catch (error) {
+        console.log(error);
+        res.render('articles/new', { article: article });
+    }
 });
 
 

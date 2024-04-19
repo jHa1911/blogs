@@ -1,8 +1,17 @@
+require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const articleRouter = require('./routes/articles');
 const app = express();
 const bodyParser = require("body-parser");
+const Article = require('./models/article');
+
+const mongoURL = process.env.MONGODB_URL;
+
+// Connect to MongoDB database using Mongoose
+mongoose.connect(mongoURL)
+    .then(() => console.log('Connected to MongoDB'))
+    .catch((err) => console.error('Error connecting to MongoDB:', err));
 
 app.set('view engine', 'ejs');
 
@@ -12,20 +21,13 @@ app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 app.use('/articles', articleRouter);
 
 
-app.get('/', (req, res) => {
-    const articles = [{
-        title: 'Test Article',
-        createdAt: new Date(),
-        description: 'Test Description'
-    },
-    {
-        title: 'Test Article 2',
-        createdAt: new Date(),
-        description: 'Test Description 2'
-    }];
+app.get('/', async (req, res) => {
+    const articles = await Article.find().sort({ createdAt: 'desc' });
     res.render('articles/index' , { articles: articles });
 });
 
-app.listen(5000, () => {
+PORT = process.env.PORT || 5000;
+
+app.listen(PORT, () => {
     console.log('Server is running on http://localhost:5000');
 });
